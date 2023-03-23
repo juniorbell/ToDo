@@ -20,17 +20,17 @@ const saveTodo=(text)=>{
     todo.appendChild(todoTitle);
 
     const doneBtn = document.createElement("button");
-    doneBtn.classList.add("finish-todo");
+    doneBtn.classList.add("btn btn-success");
     doneBtn.innerHTML = '<i class="fa-solid fa-check-double"></i>'
     todo.appendChild(doneBtn);
 
     const editBtn = document.createElement("button");
-    editBtn.classList.add("edit-todo");
+    editBtn.classList.add("btn btn-warning");
     editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>'
     todo.appendChild(editBtn);
 
     const deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("remove-todo");
+    deleteBtn.classList.add("btn btn-danger");
     deleteBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
     todo.appendChild(deleteBtn);
     
@@ -80,11 +80,11 @@ document.addEventListener("click", (e) =>{
          todoTitle = parentEL.querySelector("h3").innerText ;
        }
 
-    if(targetEL.classList.contains("finish-todo")){
+    if(targetEL.classList.contains("btn btn-success")){
         parentEL.classList.toggle("done");
     }
     
-    if(targetEL.classList.contains("remove-todo")){
+    if(targetEL.classList.contains("btn btn-success")){
         parentEL.remove();
     }
 
