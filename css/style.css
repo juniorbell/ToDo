@@ -6,11 +6,17 @@
     color: #333;
     box-sizing: border-box;
 }
-
+.titulo{
+    color: #102f5e;  
+    font-size: 4rem;
+}
 body {
-    background-image: url(../images/background.jpg);
-    background-position: center;
-    background-size: cover;
+    background: rgb(34,102,195);
+    background: linear-gradient(318deg, rgba(34,102,195,1) 23%, rgba(74,253,45,1) 100%); 
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
@@ -55,6 +61,7 @@ input,select{
     background-color: rgb(255, 255, 255);
     padding: 1.5rem;
     border-radius: 15px 0px 15px 0px;
+    box-shadow: 5px 10px 8px #1a1a1a;
 }
 
 .todo-container header{
