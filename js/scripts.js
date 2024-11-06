@@ -9,6 +9,50 @@ const searchInput = document.querySelector("#search-input");
 const eraseBtn = document.querySelector("#erase-button");
 const filterBtn = document.querySelector("#filter-select");
 
+let currentPage = 1;
+const todosPerPage = 5; 
+
+const updatePageNumberDisplay = () => {
+  document.getElementById("page-number").innerText = currentPage;
+};
+
+const nextPage = () => {
+  const todos = document.querySelectorAll(".todo");
+  const totalPages = Math.ceil(todos.length / todosPerPage); 
+  if (currentPage < totalPages) {
+    currentPage++;
+    displayTodos(currentPage);
+    updatePageNumberDisplay();
+  }
+
+  if (currentPage === totalPages) {
+    document.getElementById("next-page-btn").disabled = true;
+  } else {
+    document.getElementById("next-page-btn").disabled = false;
+  }
+};
+
+const prevPage = () => {
+  currentPage = Math.max(1, currentPage - 1);
+  displayTodos(currentPage);
+  updatePageNumberDisplay();
+  
+  document.getElementById("next-page-btn").disabled = false;
+
+};
+
+const displayTodos = (page) => {
+  const todos = document.querySelectorAll(".todo");
+  const start = (page - 1) * todosPerPage; // Determina o início dos itens para a página
+  const end = start + todosPerPage; // Determina o fim dos itens para a página
+
+  todos.forEach((todo, index) => {
+    // Exibe apenas os itens entre start e end
+    todo.style.display = (index >= start && index < end) ? "flex" : "none";
+  });
+};
+
+
 let oldInputValue;
 
 // Funções
@@ -35,7 +79,7 @@ const saveTodo = (text, done = 0, save = 1) => {
   deleteBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
   todo.appendChild(deleteBtn);
 
-  // Utilizando dados da localStorage
+// Utilizando dados da localStorage
   if (done) {
     todo.classList.add("done");
   }
@@ -61,10 +105,9 @@ const updateTodo = (text) => {
   todos.forEach((todo) => {
     let todoTitle = todo.querySelector("h3");
 
-    if (todoTitle.innerText === oldInputValue) {
+    // Verifique se todoTitle é válido antes de acessar innerText
+    if (todoTitle && todoTitle.innerText === oldInputValue) {
       todoTitle.innerText = text;
-
-      // Utilizando dados da localStorage
       updateTodoLocalStorage(oldInputValue, text);
     }
   });
@@ -74,14 +117,15 @@ const getSearchedTodos = (search) => {
   const todos = document.querySelectorAll(".todo");
 
   todos.forEach((todo) => {
-    const todoTitle = todo.querySelector("h3").innerText.toLowerCase();
+    const todoTitleElement = todo.querySelector("h3");
+    
+    if (todoTitleElement) {
+      const todoTitle = todoTitleElement.innerText.toLowerCase();
+      todo.style.display = "flex";
 
-    todo.style.display = "flex";
-
-    console.log(todoTitle);
-
-    if (!todoTitle.includes(search)) {
-      todo.style.display = "none";
+      if (!todoTitle.includes(search.toLowerCase())) {
+        todo.style.display = "none";
+      }
     }
   });
 };
@@ -170,10 +214,11 @@ editForm.addEventListener("submit", (e) => {
   const editInputValue = editInput.value;
 
   if (editInputValue) {
-    updateTodo(editInputValue);
+    updateTodo(editInputValue);  
+    toggleForms()
+  } else {
+    alert("Insira um valor para a tarefa")
   }
-
-  toggleForms();
 });
 
 searchInput.addEventListener("keyup", (e) => {
@@ -203,13 +248,6 @@ const getTodosLocalStorage = () => {
   return todos;
 };
 
-const loadTodos = () => {
-  const todos = getTodosLocalStorage();
-
-  todos.forEach((todo) => {
-    saveTodo(todo.text, todo.done, 0);
-  });
-};
 
 const saveTodoLocalStorage = (todo) => {
   const todos = getTodosLocalStorage();
@@ -245,6 +283,14 @@ const updateTodoLocalStorage = (todoOldText, todoNewText) => {
   );
 
   localStorage.setItem("todos", JSON.stringify(todos));
+};
+
+const loadTodos = () => {
+  const todos = getTodosLocalStorage();
+  todos.forEach((todo) => {
+    saveTodo(todo.text, todo.done, 0);  
+  });
+  displayTodos(currentPage);  
 };
 
 loadTodos();
